@@ -3,6 +3,7 @@
 import os
 import enum
 import shutil
+import logging
 
 # Third-party Libraries
 from pathlib import Path
@@ -15,9 +16,9 @@ class Types(enum.Enum):
 
 class Archive(object):
 
-    def __init__(self, _path, _logger):
+    def __init__(self, _path, _logger=None):
         self.path = _path
-        self.logger = _logger
+        self.logger = _logger or logging.getLogger(__name__)
 
     def __str__(self):
         return self.path
@@ -61,7 +62,7 @@ class Archive(object):
 
 class Folder(Archive):
 
-    def __init__(self, _path, _logger):
+    def __init__(self, _path, _logger=None):
         Archive.__init__(self, _path, _logger)
         self.type = Types.FOLDER
 
@@ -152,7 +153,7 @@ class Folder(Archive):
 
 class File(Archive):
 
-    def __init__(self, _path, _logger):
+    def __init__(self, _path, _logger=None):
         Archive.__init__(self, _path, _logger)
         self.type = Types.FOLDER
 
@@ -182,9 +183,9 @@ class File(Archive):
 
 class FileAdmin(object):
 
-    def __init__(self, _init_path, _logger):
+    def __init__(self, _init_path, _logger=None):
         self.origin_folder = Folder(_init_path, _logger)
-        self.logger = _logger
+        self.logger = _logger or logging.getLogger(__name__)
 
     def move_FilesTo(self, _to_path, _extension=None):
         self.logger.info(
@@ -207,12 +208,3 @@ class FileAdmin(object):
             cont += 1
 
         self.logger.info(f"Se movieron {cont} archivos")
-
-
-
-
-
-
-
-
-# Note: os.path.exists() function may return False, if permission is not granted to execute os.stat() on the requested file, even if the path exists.
