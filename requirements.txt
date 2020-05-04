@@ -1,2 +1,4 @@
 pathlib2==2.3.5
 pyyaml==5.3
+beautifulsoup4==4.8.2
+lxml==4.2.5

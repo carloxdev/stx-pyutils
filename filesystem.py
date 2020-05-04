@@ -7,6 +7,7 @@ import logging
 
 # Third-party Libraries
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 
 class Types(enum.Enum):
@@ -156,6 +157,7 @@ class File(Archive):
     def __init__(self, _path, _logger=None):
         Archive.__init__(self, _path, _logger)
         self.type = Types.FOLDER
+        self.content = None
 
     @property
     def title(self):
@@ -179,6 +181,22 @@ class File(Archive):
             f"in {self.parent_path}."
         )
         os.remove(self.path)
+
+    def read(self):
+        if self.extension.upper() in ['.XML', '.HTML']:
+            try:
+                file_obj = open(self.path, 'r')
+                self.content = BeautifulSoup(
+                    file_obj.read(),
+                    features=self.extension.replace('.', '')
+                )
+
+            except Exception as e:
+                raise NameError(str(e))
+        else:
+            msg_error = f'Extensión {self.extension} aun no soportada'
+            self.logger.error(msg_error)
+            raise NameError(msg_error)
 
 
 class FileAdmin(object):
