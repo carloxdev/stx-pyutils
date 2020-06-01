@@ -169,7 +169,7 @@ class File(Archive):
     def extension(self):
         name = self.name
         extension = os.path.splitext(name)[1]
-        return extension
+        return extension.upper()
 
     def exist(self):
         exist = super().exist(Types.FILE)
@@ -183,16 +183,40 @@ class File(Archive):
         os.remove(self.path)
 
     def read(self):
-        if self.extension.upper() in ['.XML', '.HTML']:
+        if self.extension.upper() == '.XML':
             try:
                 file_obj = open(self.path, 'r')
                 self.content = BeautifulSoup(
                     file_obj.read(),
-                    features=self.extension.replace('.', '')
+                    features=self.extension.lower().replace('.', '')
                 )
 
             except Exception as e:
                 raise NameError(str(e))
+
+        elif self.extension.upper() in ['.PNG', '.JPG', '.JPEG']:
+            try:
+                self.content = open(self.path, 'rb')
+
+            except Exception as e:
+                raise NameError(str(e))
+
+        else:
+            msg_error = f'Extensión {self.extension} aun no soportada'
+            self.logger.error(msg_error)
+            raise NameError(msg_error)
+
+    def save(self):
+        if self.extension.upper() in ['.XML', '.HTML']:
+            file_obj = open(self.path, mode="w", encoding="utf-8")
+            file_obj.write(self.content)
+            file_obj.close()
+
+        if self.extension.upper() in ['.PNG', '.JPG', '.JPEG']:
+            file_obj = open(self.path, mode="wb")
+            file_obj.write(self.content.read())
+            file_obj.close()
+
         else:
             msg_error = f'Extensión {self.extension} aun no soportada'
             self.logger.error(msg_error)
