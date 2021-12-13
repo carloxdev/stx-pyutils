@@ -1,6 +1,6 @@
 pathlib2==2.3.5
 pyyaml==5.3
 beautifulsoup4==4.8.2
-lxml==4.2.5
+lxml==4.6.5
 xlsxwriter==1.2.8
 python-dateutil==2.8.1
